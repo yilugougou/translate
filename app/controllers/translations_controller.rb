@@ -6,59 +6,16 @@ class TranslationsController < ApplicationController
   # GET /translations.json
   def index
     @translations = Translation.all
-    require 'translation_tool'
-    @TKK = TranslationTool.new.get_tkk
     @results = []
   end
 
   def get_translate
-    require "execjs"
-    a = 439118
-    b = "+-3^+b+-f"
-    d = 0
-    while(d < b.length - 2) do
-      b = b.to_s
-      c = b[d + 2]
-      p "function b a value --- 1-*" + c.to_s
-      # c = 'a' <= c ? c[0].ord  - 87 : c.to_i
-      if 'a' <= c
-        c = c[0].ord  - 87
-      else
-        c = c.to_i
-      end
-      p "function b a value --- 2-*" + c.to_s
-
-      # c = '+' == b[d + 1] ? a >> c : a << c
-      if '+' == b[d + 1]
-        # c = a >> c
-        c = ExecJS.eval("#{a} >> #{c}")
-
-      else
-        # c = a << c
-        c = ExecJS.eval("#{a} << #{c}")
-      end
-
-      p "function b b value*" + b.to_s
-      p "function b b.charAt(d + 1)*"+ b[d + 1].to_s
-      p "function b d value"+ d.to_s
-      p "function b '+' == b.charAt(d + 1)*#{"+" == b[d + 1]}"
-      p "function b a value --- 3-*"+ c.to_s
-      if '+' == b[d]
-        a = a.to_i + c.to_i
-      else
-        a = a ^ c
-      end
-      # a = '+' == b[d] ? a.to_i + c.to_i & 4294967295 : a ^ c
-      p "function b a value --- 4-*" + a.to_s
-      d += 3
-    end
     require 'translation_tool'
     now_time = Time.now()
     # (0..3600).each do |i|
-    @results = TranslationTool.new.start_google(params[:q], params[:tk], params[:tl])
+    @results = TranslationTool.new.start_google(params[:q], params[:tl])
     # end
 
-    @TKK = TranslationTool.new.get_tkk
     render :index
   end
 

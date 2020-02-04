@@ -75,11 +75,13 @@
   <option value="vi">越南语</option>
   <option value="yue">粤语(繁体)</option>
 </select>
-<input name="Query" type="button" value="翻译" onclick="tk(<%= @TKK.to_json %>);">
+<input name="Query" type="button" value="翻译" onclick="trans_late();">
 
-<h3>翻译的结果为：</h3>
-<% @results.each do |result| %>
-  <p id="notice"><%=result %></p>
+<% if @results.present? %>
+  <h3>翻译的结果为：</h3>
+  <% @results.each do |result| %>
+    <p id="notice"><%=result %></p>
+  <% end %>
 <% end %>
 
 <%= link_to 'New Translation', new_translation_path %>
@@ -147,14 +149,17 @@
         console.log('tks', tks.join('|'));
         console.log('translateContents', translateContents.join('|'));
 
-       // window.location.href = "/translations/get_translate?tk=" + tks.join('|') + "&q=" + translateContents.join('|') + "&tl=" + $("#tta_tgtsl").val();
+       window.location.href = "/translations/get_translate?q=" + translateContents.join('|') + "&tl=" + $("#tta_tgtsl").val();
         // return a.toString() + "." + (a ^ h)
     }
-    function trans_late(tkk) {
-        let q = $("#translateContent").val();
-        console.log('#translateContent', q);
-        let tk = tk(q, tkk);
-        console.log('tk', tk);
-        window.location.href = "/translations/get_translate?tk=" + tk + "&q=" + $("#translateContent").val() + "&tl=" + $("#tta_tgtsl").val();
+    function trans_late(){
+      let translateContents = [];
+      let tta = document.getElementsByTagName('textarea')
+      for(var i=0; i < tta.length; i++) {
+        if (tta[i].value) {
+            translateContents.push(tta[i].value);
+        }
+      }
+      window.location.href = "/translations/get_translate?q=" + translateContents.join('|') + "&tl=" + $("#tta_tgtsl").val();
     }
 </script>
