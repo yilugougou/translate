@@ -12,10 +12,7 @@ class TranslationsController < ApplicationController
   def get_translate
     require 'translation_tool'
     now_time = Time.now()
-    # (0..3600).each do |i|
     @results = TranslationTool.new.start_google(params[:q], params[:tl])
-    # end
-
     render :index
   end
 

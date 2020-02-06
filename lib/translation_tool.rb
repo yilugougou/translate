@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
-require 'em/pure_ruby'
+# require 'em/pure_ruby'
 require 'digest/md5'
-require 'pry'
 class TranslationTool
   def start query
     @result = ''
@@ -65,33 +64,28 @@ class TranslationTool
   end
 
   def start_google(qss, tl)
-    qs = qss.split('|')
-    results = []
-    p "qs === #{qs}"
+    result = ""
+    p "qs === #{qss}"
     t = Thread.new do
-      qs.each_with_index do |query, index|
-        tk = get_tk(query, get_tkk)
-        q = URI::escape(query)
-        url = "https://translate.google.cn/translate_a/single?client=webapp&sl=auto&tl=#{tl}&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&source=bh&ssel=0&tsel=0&kc=1&tk=#{tk}&q=#{q}"
-        # url = "https://translate.google.cn/translate_a/single"
-        p "url ==== #{url}"
-        response = HTTParty.post(url)
-        result = ""
-        if response[0].length > 2
-          response[0].each do |res|
-            if res[0].present?
-              result += res[0]
-            end
+      tk = get_tk(qss, get_tkk)
+      q = URI::escape(qss)
+      url = "https://translate.google.cn/translate_a/single?client=webapp&sl=auto&tl=#{tl}&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&source=bh&ssel=0&tsel=0&kc=1&tk=#{tk}&q=#{q}"
+      # url = "https://translate.google.cn/translate_a/single"
+      p "url ==== #{url}"
+      response = HTTParty.post(url)
+      if response[0].length > 2
+        response[0].each do |res|
+          if res[0].present?
+            result += res[0]
           end
-        else
-          result = response[0][0][0]
         end
-        results.push(result)
+      else
+        result = response[0][0][0]
       end
       # sleep(1)
     end
     t.join
-    results
+    result.split('||')
   end
 
   def start_bing(query)
@@ -105,7 +99,6 @@ class TranslationTool
     # response = HTTParty.post(url, {
     #   :body => {"query": query,"sourceLang": "auto","targetLang": "en"}.to_json
     # })
-    # binding.pry
 
     response = HTTParty.get(url, :headers => {
         "User-Agent":"Mozilla/5.0 (Windows NT 6.1; rv:53.0) Gecko/20100101 Firefox/53.0"
